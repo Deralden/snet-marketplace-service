@@ -124,12 +124,14 @@ class ServicePublisherService:
         return
 
     def save_service(self, payload):
+        logger.info(f"Save service with payload :: {payload}")
         service = ServicePublisherRepository().get_service_for_given_service_uuid(self._org_uuid, self._service_uuid)
         service.service_id = payload["service_id"]
         service.proto = payload.get("proto", {})
         service.short_description = payload.get("short_description", "")
         service.description = payload.get("description", "")
         service.project_url = payload.get("project_url", "")
+        service.service_type = payload.get("service_type", ServiceType.GRPC.value)
         service.contributors = ServicePublisherService. \
             _get_valid_service_contributors(contributors=payload.get("contributors", []))
         service.tags = payload.get("tags", [])
@@ -140,6 +142,7 @@ class ServicePublisherService:
             groups.append(service_group)
         service.groups = groups
         service.service_state.transaction_hash = payload.get("transaction_hash", None)
+        logger.info(f"Save service data with proto: {service.proto} and assets: {service.assets}")
         ServicePublisherRepository().save_service(self._username, service, ServiceStatus.APPROVED.value)
         comment = payload.get("comments", {}).get(UserType.SERVICE_PROVIDER.value, "")
         if len(comment) > 0:
@@ -181,6 +184,7 @@ class ServicePublisherService:
         service_uuid = uuid4().hex
         service = ServiceFactory().create_service_entity_model(self._org_uuid, service_uuid, payload,
                                                                ServiceStatus.DRAFT.value)
+        logger.info(f"Creating service :: {service.to_dict()}")
         ServicePublisherRepository().add_service(service, self._username)
         return {"org_uuid": self._org_uuid, "service_uuid": service_uuid}
 
@@ -238,8 +242,9 @@ class ServicePublisherService:
             service_data = self.map_offchain_service_config(offchain_service_config, service_data)
         return service_data
 
-    def publish_service_data_to_ipfs(self, service_type=ServiceType.GRPC.value):
-        service = ServicePublisherRepository().get_service_for_given_service_uuid(self._org_uuid, self._service_uuid)
+    def publish_service_data_to_ipfs(self):
+        service_publisher_repo = ServicePublisherRepository()
+        service = service_publisher_repo.get_service_for_given_service_uuid(self._org_uuid, self._service_uuid)
         if service.service_state.state == ServiceStatus.APPROVED.value:
             proto_url = service.assets.get("proto_files", {}).get("url", None)
             if proto_url is None:
@@ -253,11 +258,11 @@ class ServicePublisherService:
             service.proto = {
                 "model_ipfs_hash": asset_ipfs_hash,
                 "encoding": "proto",
-                "service_type": service_type if service_type else ServiceType.GRPC.value
+                "service_type": service.service_type
             }
             service.assets["proto_files"]["ipfs_hash"] = asset_ipfs_hash
             ServicePublisherDomainService.publish_assets(service)
-            service = ServicePublisherRepository().save_service(self._username, service, service.service_state.state)
+            service = service_publisher_repo.save_service(self._username, service, service.service_state.state)
             return service
         logger.info(f"Service status needs to be {ServiceStatus.APPROVED.value} to be eligible for publishing.")
         raise InvalidServiceStateException()
@@ -379,9 +384,9 @@ class ServicePublisherService:
             raise Exception(f"Error getting service details for org_id :: {org_id} service_id :: {service_id}")
         return json.loads(response.text)["data"]
 
-    def publish_service_data(self, service_type=ServiceType.GRPC.value):
+    def publish_service_data(self):
         # Validate service metadata
-        current_service = self.publish_service_data_to_ipfs(service_type=service_type)
+        current_service = self.publish_service_data_to_ipfs()
 
         is_valid = Service.is_metadata_valid(service_metadata=current_service.to_metadata())
         logger.info(f"is_valid :: {is_valid} :: validated current_metadata :: {current_service.to_metadata()}")
@@ -397,8 +402,10 @@ class ServicePublisherService:
             existing_metadata = {}
         publish_to_blockchain = self.are_blockchain_attributes_got_updated(existing_metadata, current_service.to_metadata())
         existing_offchain_configs = self.get_existing_offchain_configs(existing_service_data)
+
         current_offchain_attributes = ServicePublisherRepository().get_offchain_service_config(org_uuid=self._org_uuid,
                                                                                                service_uuid=self._service_uuid)
+
         new_offchain_attributes = self.get_offchain_changes(
             current_offchain_config=current_offchain_attributes.configs,
             existing_offchain_config=existing_offchain_configs,
