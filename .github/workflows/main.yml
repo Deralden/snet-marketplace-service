@@ -14,8 +14,8 @@ jobs:
         
       - name: install packs
         run: |
-          sudo apt update --allow-releaseinfo-change
-          sudo apt install unzip -y
+          apt update --allow-releaseinfo-change
+          apt install unzip -y
 
       - name: clone repo
         uses: actions/checkout@v3
