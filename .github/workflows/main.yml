@@ -19,8 +19,6 @@ jobs:
             MYSQL_DATABASE: unittest_db
             MYSQL_USER: unittest_root
             MYSQL_PASSWORD: unittest_pwd
-          ports:
-            - 3306:3306
             
       steps:
       - name: install pip
@@ -44,7 +42,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: check bd
-        run: mysql --host 127.0.0.1 --port 3306 -u unittest_root -e "SHOW DATABASES"
+        run: mysql --host 172.17.0.1 --port 3306 -u unittest_root -e "SHOW DATABASES"
             
       - name: install packs
         run: |
