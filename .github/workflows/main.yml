@@ -9,7 +9,7 @@ on:
 jobs:
     run_tests:
       runs-on: ubuntu-latest
-      container: python:3.10-bookworm
+      container: node:20-bookworm
       services:
         nginx:
           image: mysql:8.0.21
@@ -28,10 +28,6 @@ jobs:
           apt update
           apt install -y python3-pip python3.11-venv netcat-traditional
           
-      - name: setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
             
       - name: install packs
         run: |
@@ -78,8 +74,8 @@ jobs:
       - name: run tests
         run: |
           export PIP_BREAK_SYSTEM_PACKAGES=1
-          PYTHONPATH=$PWD python -m coverage run -m pytest */testcases/integration_testcases/*.py */testcases/unit_testcases/*.py */testcases/unit_testcases/*/*.py */testcases/functional_testcases/*.py
-          python -m coverage report -m
+          PYTHONPATH=$PWD python3 -m coverage run -m pytest */testcases/integration_testcases/*.py */testcases/unit_testcases/*.py */testcases/unit_testcases/*/*.py */testcases/functional_testcases/*.py
+          python3 -m coverage report -m
           coverage xml -i
           sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner -Dsonar.host.url=https://sonarqube.singularitynet.io -Dsonar.login=${SONAR_TOKEN} $SONAR_SCANNER_OPTS_CUSTOM
       
