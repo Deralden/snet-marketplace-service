@@ -10,16 +10,6 @@ jobs:
     run_tests:
       runs-on: ubuntu-latest
       container: node:20-bookworm
-      steps:
-        
-      - name: install packs
-        run: |
-          apt update --allow-releaseinfo-change
-          apt install unzip -y
-
-      - name: clone repo
-        uses: actions/checkout@v3
-
       services:
         nginx:
           image: mysql:8.0.21
@@ -29,3 +19,26 @@ jobs:
             MYSQL_DATABASE: unittest_db
             MYSQL_USER: unittest_root
             MYSQL_PASSWORD: unittest_pwd
+            
+      steps:
+      - name: install packs
+        run: |
+          export PIP_BREAK_SYSTEM_PACKAGES=1
+          apt update --allow-releaseinfo-change
+          apt install unzip -y
+          wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
+          unzip sonar-scanner-cli-4.6.2.2472-linux.zip
+          apt install default-mysql-client
+          pip3 install coverage coveralls pytest alembic
+
+      - name: clone repo
+        uses: actions/checkout@v3
+        
+      - name: install required packages
+        run: |
+          export PIP_BREAK_SYSTEM_PACKAGES=1
+          for requirement_file in `ls */*/requirement*.txt`;do sudo pip install -r $requirement_file --prefer-binary ;done
+          for requirement_file in `ls */requirement*.txt`;do sudo pip install -r $requirement_file --prefer-binary ;done
+          for package_file in `ls */package*.json | cut -d '/' -f1`;do sudo npm install $package_file/;done
+      
+
