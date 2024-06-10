@@ -21,7 +21,6 @@ jobs:
             MYSQL_PASSWORD: unittest_pwd
             
       steps:
-
       - name: install pip
         run: |
           apt update
