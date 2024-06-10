@@ -24,6 +24,7 @@ jobs:
       - name: install packs
         run: |
           export PIP_BREAK_SYSTEM_PACKAGES=1
+          apt install -y python3-pip python3.11-venv
           apt update --allow-releaseinfo-change
           apt install unzip -y
           wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
