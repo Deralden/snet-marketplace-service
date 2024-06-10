@@ -21,6 +21,12 @@ jobs:
             MYSQL_PASSWORD: unittest_pwd
             
       steps:
+
+      - name: install pip
+        run: |
+          apt update
+          apt install -y python3-pip python3.11-venv
+          
       - name: install packs
         run: |
           export PIP_BREAK_SYSTEM_PACKAGES=1
