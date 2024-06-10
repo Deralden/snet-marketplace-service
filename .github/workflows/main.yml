@@ -1,0 +1,31 @@
+name: tests
+on:
+  # push:
+  #   branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+  workflow_dispatch:
+
+jobs:
+    run_tests:
+      runs-on: ubuntu-latest
+      container: node:20-bookworm
+      steps:
+        
+      - name: install packs
+        run: |
+          sudo apt update --allow-releaseinfo-change
+          sudo apt install unzip -y
+
+      - name: clone repo
+        uses: actions/checkout@v3
+
+      services:
+        nginx:
+          image: mysql:8.0.21
+          env:
+            MYSQL_ROOT_PASSWORD: unittest_pwd
+            MYSQL_HOST: '%'
+            MYSQL_DATABASE: unittest_db
+            MYSQL_USER: unittest_root
+            MYSQL_PASSWORD: unittest_pwd
