@@ -29,3 +29,5 @@ jobs:
             MYSQL_DATABASE: unittest_db
             MYSQL_USER: unittest_root
             MYSQL_PASSWORD: unittest_pwd
+          options:
+            --default-authentication-plugin=mysql_native_password
