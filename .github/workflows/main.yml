@@ -38,7 +38,6 @@ jobs:
           unzip sonar-scanner-cli-4.6.2.2472-linux.zip
           apt install default-mysql-client -y
           pip3 install coverage coveralls pytest alembic
-          docker ps
 
       - name: clone repo
         uses: actions/checkout@v3
