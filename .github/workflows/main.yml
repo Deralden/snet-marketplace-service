@@ -42,15 +42,8 @@ jobs:
       - name: clone repo
         uses: actions/checkout@v3
 
-      - name: clone repo
-        run: |
-            for i in `seq 1 30`;
-            do
-              nc -z 127.0.0.1 3306 && echo Success && exit 0
-              echo -n .
-              sleep 1
-            done
-            echo Failed waiting for MySQL && exit 1
+      - name: check bd
+        run: mysql --host 127.0.0.1 --port 3306 -u unittest_root -e "SHOW DATABASES"
             
       - name: install packs
         run: |
