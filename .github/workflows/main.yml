@@ -40,6 +40,16 @@ jobs:
       - name: clone repo
         uses: actions/checkout@v3
 
+      - name: clone repo
+        run: |
+            for i in `seq 1 30`;
+            do
+              nc -z 127.0.0.1 3306 && echo Success && exit 0
+              echo -n .
+              sleep 1
+            done
+            echo Failed waiting for MySQL && exit 1
+            
       - name: install packs
         run: |
           export PIP_BREAK_SYSTEM_PACKAGES=1
