@@ -24,7 +24,7 @@ jobs:
       - name: install pip
         run: |
           apt update
-          apt install -y python3-pip python3.11-venv netcat
+          apt install -y python3-pip python3.11-venv netcat-traditional
           
       - name: install packs
         run: |
