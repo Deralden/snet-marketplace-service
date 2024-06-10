@@ -9,7 +9,7 @@ on:
 jobs:
     run_tests:
       runs-on: ubuntu-latest
-      container: 3.10-bookworm
+      container: python:3.10-bookworm
       services:
         nginx:
           image: mysql:8.0.21
