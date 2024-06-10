@@ -28,7 +28,7 @@ jobs:
           apt install unzip -y
           wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
           unzip sonar-scanner-cli-4.6.2.2472-linux.zip
-          apt install default-mysql-client
+          apt install default-mysql-client -y
           pip3 install coverage coveralls pytest alembic
 
       - name: clone repo
