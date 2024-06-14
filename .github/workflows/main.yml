@@ -26,7 +26,7 @@ jobs:
       - name: install pip
         run: |
           apt update
-          apt install -y python3-pip python3.11-venv netcat-traditional socat
+          apt install -y python3-pip python3.11-venv netcat-traditional socat iputils-ping
           cat /etc/hosts
           ping -c 2 mysql
           
