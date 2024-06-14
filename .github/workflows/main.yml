@@ -76,12 +76,12 @@ jobs:
           for alembic_file in `ls */alembic*.ini | cut -d '/' -f1`;do cd $alembic_file; echo $alembic_file; alembic upgrade head; cd .. ;done
           mysql -h mysql -u unittest_root -punittest_pwd unittest_db < orchestrator/testcases/script.sql
 
-      # - name: run tests
-      #   run: |
-      #     export PIP_BREAK_SYSTEM_PACKAGES=1
-      #     PYTHONPATH=$PWD python3 -m coverage run -m pytest */testcases/integration_testcases/*.py */testcases/unit_testcases/*.py */testcases/unit_testcases/*/*.py */testcases/functional_testcases/*.py
-      #     python3 -m coverage report -m
-      #     coverage xml -i
-      #     sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner -Dsonar.host.url=https://sonarqube.singularitynet.io -Dsonar.login=${SONAR_TOKEN} $SONAR_SCANNER_OPTS_CUSTOM
+      - name: run tests
+        run: |
+          export PIP_BREAK_SYSTEM_PACKAGES=1
+          PYTHONPATH=$PWD python3 -m coverage run -m pytest */testcases/integration_testcases/*.py */testcases/unit_testcases/*.py */testcases/unit_testcases/*/*.py */testcases/functional_testcases/*.py
+          python3 -m coverage report -m
+          coverage xml -i
+          sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner -Dsonar.host.url=https://sonarqube.singularitynet.io -Dsonar.login=${SONAR_TOKEN} $SONAR_SCANNER_OPTS_CUSTOM
       
 
