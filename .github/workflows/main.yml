@@ -82,6 +82,7 @@ jobs:
           export PIP_BREAK_SYSTEM_PACKAGES=1
           export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
           export AWS_XRAY_SDK_ENABLED=false
+          pip3 install pymysql==0.10.1
           PYTHONPATH=$PWD python3 -m coverage run -m pytest */testcases/integration_testcases/*.py */testcases/unit_testcases/*.py */testcases/unit_testcases/*/*.py */testcases/functional_testcases/*.py
           python3 -m coverage report -m
           coverage xml -i
