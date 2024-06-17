@@ -81,6 +81,8 @@ jobs:
         run: |
           export PIP_BREAK_SYSTEM_PACKAGES=1
           export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+          export LAMBDA_TASK_ROOT_KEY=LAMBDA_TASK_ROOT
+          export LAMBDA_TRACE_HEADER_KEY=_X_AMZN_TRACE_ID
           PYTHONPATH=$PWD python3 -m coverage run -m pytest */testcases/integration_testcases/*.py */testcases/unit_testcases/*.py */testcases/unit_testcases/*/*.py */testcases/functional_testcases/*.py
           python3 -m coverage report -m
           coverage xml -i
