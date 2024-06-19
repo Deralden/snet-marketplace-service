@@ -64,18 +64,18 @@ jobs:
         run: |
           pip3 install -r lambda_layers/eth_event_listener/requirements.txt
 
-      - name: install required packages 2
+      - name: install other side packages and layers
         run: |
           pip3 install -r lambda_layers/web3_and_grpc_libraries/requirements.txt
           pip3 install -r lambda_layers/common_python_libraries/requirements.txt
           pip3 install -r registry/migration/requirements.txt
-
+          
       - name: install required packages 5
         run: |
           # export PIP_BREAK_SYSTEM_PACKAGES=1
           # export CFLAGS="-I${PREFIX}/include/python3.11/cpython"
           #for requirement_file in `ls */*/requirement*.txt`;do pip3 install -r $requirement_file ;done
-          for requirement_file in `ls */requirement*.txt`;do echo "=============$requirement_file=================="; pip3 install -r $requirement_file ;done
+          # for requirement_file in `ls */requirement*.txt`;do echo "=============$requirement_file=================="; pip3 install -r $requirement_file ;done
           # pip3 install -r reqs.txt
           for package_file in `ls */package*.json | cut -d '/' -f1`;do npm install $package_file/;done
           
@@ -97,10 +97,19 @@ jobs:
       #     export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
       #     export AWS_XRAY_SDK_ENABLED=false
       #     pip3 install pymysql==1.0.2
-      #     PYTHONPATH=$PWD python3 -m coverage run -m pytest 
-      
+      #     PYTHONPATH=$PWD python3 -m coverage run -m pytest */testcases/integration_testcases/*.py */testcases/unit_testcases/*.py */testcases/unit_testcases/*/*.py */testcases/functional_testcases/*.py
       #     python3 -m coverage report -m
       #     coverage xml -i
       #     # sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner -Dsonar.host.url=https://sonarqube.singularitynet.io -Dsonar.login=${SONAR_TOKEN} $SONAR_SCANNER_OPTS_CUSTOM
       
+      - name: common
+        run: |
+          pip3 install -r common/requirements.txt
+
+      - name: dapp_user
+        run: |
+          pip3 install -r dapp_user/requirements.txt
+          PYTHONPATH=$PWD python3 -m coverage run -m pytest dapp_user/testcases/unit_testcases/*.py dapp_user/testcases/functional_testcases/*.py
+          python3 -m coverage report -m
+          coverage xml -i
 
