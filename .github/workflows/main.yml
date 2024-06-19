@@ -31,10 +31,10 @@ jobs:
         with:
           python-version: '3.7' 
           
-      # - name: install pip
-      #   run: |
-      #     sudo apt update
-      #     sudo apt install -y python3-pip netcat-traditional socat iputils-ping
+      - name: install pip
+        run: |
+          sudo apt update
+          sudo apt install -y python3-pip netcat-traditional socat iputils-ping
           
       - name: install packs
         run: |
