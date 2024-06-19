@@ -60,18 +60,34 @@ jobs:
             done
             echo Failed waiting for MySQL && exit 1
             
-      - name: install required packages
+      - name: install required packages 1
         run: |
-          export PIP_BREAK_SYSTEM_PACKAGES=1
-          export CFLAGS="-I${PREFIX}/include/python3.11/cpython"
-          for requirement_file in `ls */*/requirement*.txt`;do pip3 install -r $requirement_file ;done
-          #for requirement_file in `ls */requirement*.txt`;do pip3 install -r $requirement_file ;done
+          pip3 install -r lambda_layers/common_python_libraries/requirements.txt
+
+      - name: install required packages 2
+        run: |
+          pip3 install -r lambda_layers/web3_and_grpc_libraries/requirements.txt
+
+      - name: install required packages 3
+        run: |
+          pip3 install -r lambda_layers/eth_event_listener/requirements.txt
+
+      - name: install required packages 4
+        run: |
+          pip3 install -r registry/migration/requirements.txt
+
+      - name: install required packages 5
+        run: |
+          # export PIP_BREAK_SYSTEM_PACKAGES=1
+          # export CFLAGS="-I${PREFIX}/include/python3.11/cpython"
+          #for requirement_file in `ls */*/requirement*.txt`;do pip3 install -r $requirement_file ;done
+          # for requirement_file in `ls */requirement*.txt`;do pip3 install -r $requirement_file ;done
           # pip3 install -r reqs.txt
           for package_file in `ls */package*.json | cut -d '/' -f1`;do npm install $package_file/;done
           
       - name: create db
         run: |
-          export PIP_BREAK_SYSTEM_PACKAGES=1
+          # export PIP_BREAK_SYSTEM_PACKAGES=1
           # socat TCP-LISTEN:3306,fork TCP:mysql:3306 &
           # mysql -h 172.17.0.1 -u root -punittest_pwd -e "create database registry_unittest_db"
           mysql -h 127.0.0.1 -P 3306 -u root -punittest_pwd -e "create database registry_unittest_db"
