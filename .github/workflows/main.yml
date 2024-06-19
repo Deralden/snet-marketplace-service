@@ -108,6 +108,8 @@ jobs:
 
       - name: dapp_user
         run: |
+          export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+          export AWS_XRAY_SDK_ENABLED=false
           pip3 install -r dapp_user/requirements.txt
           PYTHONPATH=$PWD python3 -m coverage run -m pytest dapp_user/testcases/unit_testcases/*.py dapp_user/testcases/functional_testcases/*.py
           python3 -m coverage report -m
