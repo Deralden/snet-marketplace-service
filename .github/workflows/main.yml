@@ -70,16 +70,12 @@ jobs:
           pip3 install -r lambda_layers/common_python_libraries/requirements.txt
           pip3 install -r registry/migration/requirements.txt
 
-      - name: contract_api
-        run: |
-          pip3 install -r lambda_layers/common_python_libraries/requirements.txt
-
       - name: install required packages 5
         run: |
           # export PIP_BREAK_SYSTEM_PACKAGES=1
           # export CFLAGS="-I${PREFIX}/include/python3.11/cpython"
           #for requirement_file in `ls */*/requirement*.txt`;do pip3 install -r $requirement_file ;done
-          for requirement_file in `ls */requirement*.txt`;do pip3 install -r $requirement_file ;done
+          for requirement_file in `ls */requirement*.txt`;do echo "=============$requirement_file=================="; pip3 install -r $requirement_file ;done
           # pip3 install -r reqs.txt
           for package_file in `ls */package*.json | cut -d '/' -f1`;do npm install $package_file/;done
           
