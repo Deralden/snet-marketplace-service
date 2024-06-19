@@ -45,7 +45,7 @@ jobs:
           unzip sonar-scanner-cli-4.6.2.2472-linux.zip
           sudo apt install default-mysql-client -y
           # pip3 install coverage coveralls pytest alembic
-          pip3 install pytest
+          pip3 install pytest setuptools
 
       - name: clone repo
         uses: actions/checkout@v3
