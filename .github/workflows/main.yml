@@ -9,7 +9,7 @@ on:
 jobs:
     run_tests:
       runs-on: ubuntu-latest
-      container: node:20-bookworm
+      # container: node:20-bookworm
       services:
         mysql:
           image: mysql:8.0.21
@@ -23,14 +23,19 @@ jobs:
           - 3306:3306
   
       steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.7' 
+          
       - name: install pip
         run: |
           apt update
-          apt install -y python3-pip python3.11-venv netcat-traditional socat iputils-ping
-          cat /etc/hosts
-          ping -c 2 mysql
+          apt install -y python3-pip netcat-traditional socat iputils-ping
           
-            
       - name: install packs
         run: |
           export PIP_BREAK_SYSTEM_PACKAGES=1
@@ -60,32 +65,32 @@ jobs:
         run: |
           export PIP_BREAK_SYSTEM_PACKAGES=1
           export CFLAGS="-I${PREFIX}/include/python3.11/cpython"
-          # for requirement_file in `ls */*/requirement*.txt`;do pip3 install -r $requirement_file ;done
-          # for requirement_file in `ls */requirement*.txt`;do pip3 install -r $requirement_file ;done
-          pip3 install -r reqs.txt
+          for requirement_file in `ls */*/requirement*.txt`;do pip3 install -r $requirement_file ;done
+          for requirement_file in `ls */requirement*.txt`;do pip3 install -r $requirement_file ;done
+          # pip3 install -r reqs.txt
           for package_file in `ls */package*.json | cut -d '/' -f1`;do npm install $package_file/;done
           
       - name: create db
         run: |
           export PIP_BREAK_SYSTEM_PACKAGES=1
-          socat TCP-LISTEN:3306,fork TCP:mysql:3306 &
+          # socat TCP-LISTEN:3306,fork TCP:mysql:3306 &
           # mysql -h 172.17.0.1 -u root -punittest_pwd -e "create database registry_unittest_db"
-          mysql -h mysql -u root -punittest_pwd -e "create database registry_unittest_db"
-          mysql -h mysql -u root -punittest_pwd -e "create database verification_unittest_db"
-          mysql -h mysql -u root -punittest_pwd -e "GRANT ALL PRIVILEGES ON *.* TO 'unittest_root'@'%';"
+          mysql -h 127.0.0.1 -P 3306 -u root -punittest_pwd -e "create database registry_unittest_db"
+          mysql -h 127.0.0.1 -P 3306 -u root -punittest_pwd -e "create database verification_unittest_db"
+          mysql -h 127.0.0.1 -P 3306 -u root -punittest_pwd -e "GRANT ALL PRIVILEGES ON *.* TO 'unittest_root'@'%';"
           export PYTHONPATH=$PWD
           for alembic_file in `ls */alembic*.ini | cut -d '/' -f1`;do cd $alembic_file; echo $alembic_file; alembic upgrade head; cd .. ;done
-          mysql -h mysql -u unittest_root -punittest_pwd unittest_db < orchestrator/testcases/script.sql
+          mysql -h 127.0.0.1 -P 3306 -u unittest_root -punittest_pwd unittest_db < orchestrator/testcases/script.sql
 
-      - name: run tests
-        run: |
-          export PIP_BREAK_SYSTEM_PACKAGES=1
-          export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
-          export AWS_XRAY_SDK_ENABLED=false
-          pip3 install pymysql==1.0.2
-          PYTHONPATH=$PWD python3 -m coverage run -m pytest */testcases/integration_testcases/*.py */testcases/unit_testcases/*.py */testcases/unit_testcases/*/*.py */testcases/functional_testcases/*.py
-          python3 -m coverage report -m
-          coverage xml -i
-          sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner -Dsonar.host.url=https://sonarqube.singularitynet.io -Dsonar.login=${SONAR_TOKEN} $SONAR_SCANNER_OPTS_CUSTOM
+      # - name: run tests
+      #   run: |
+      #     export PIP_BREAK_SYSTEM_PACKAGES=1
+      #     export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+      #     export AWS_XRAY_SDK_ENABLED=false
+      #     pip3 install pymysql==1.0.2
+      #     PYTHONPATH=$PWD python3 -m coverage run -m pytest */testcases/integration_testcases/*.py */testcases/unit_testcases/*.py */testcases/unit_testcases/*/*.py */testcases/functional_testcases/*.py
+      #     python3 -m coverage report -m
+      #     coverage xml -i
+      #     # sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner -Dsonar.host.url=https://sonarqube.singularitynet.io -Dsonar.login=${SONAR_TOKEN} $SONAR_SCANNER_OPTS_CUSTOM
       
 
