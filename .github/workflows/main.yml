@@ -104,6 +104,8 @@ jobs:
       
       - name: common
         run: |
+          export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+          export AWS_XRAY_SDK_ENABLED=false
           pip3 install -r common/requirements.txt
 
       - name: dapp_user
@@ -112,6 +114,82 @@ jobs:
           export AWS_XRAY_SDK_ENABLED=false
           pip3 install -r dapp_user/requirements.txt
           PYTHONPATH=$PWD python3 -m coverage run -m pytest dapp_user/testcases/unit_testcases/*.py dapp_user/testcases/functional_testcases/*.py
-          python3 -m coverage report -m
-          coverage xml -i
 
+      - name: notification
+        run: |
+          export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+          export AWS_XRAY_SDK_ENABLED=false
+          pip3 install -r notification/requirements.txt
+
+      - name: payments
+        run: |
+          export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+          export AWS_XRAY_SDK_ENABLED=false
+          pip3 install -r payments/requirements.txt
+          PYTHONPATH=$PWD python3 -m coverage run -m pytest payments/testcases/unit_testcases/*.py
+
+      - name: service_status
+        run: |
+          export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+          export AWS_XRAY_SDK_ENABLED=false
+          pip3 install -r service_status/requirements.txt
+          pip3 install --upgrade protobuf
+          PYTHONPATH=$PWD python3 -m coverage run -m pytest service_status/testcases/unit_testcases/*.py service_status/testcases/functional_testcases/*.py
+
+      - name: utility
+        run: |
+          export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+          export AWS_XRAY_SDK_ENABLED=false
+          pip3 install setuptools==65.5.0
+          pip3 install wheel==0.38.0
+          pip3 install -r utility/requirements.txt
+          PYTHONPATH=$PWD python3 -m coverage run -m pytest utility/testcases/functional_testcases/*.py
+          
+      - name: contract_api
+        run: |
+          export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+          export AWS_XRAY_SDK_ENABLED=false
+          pip3 install -r contract_api/requirements.txt
+          PYTHONPATH=$PWD python3 -m coverage run -m pytest contract_api/testcases/unit_testcases/*.py contract_api/testcases/unit_testcases/*/*.py contract_api/testcases/functional_testcases/*.py
+
+      - name: event_pubsub
+        run: |
+          export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+          export AWS_XRAY_SDK_ENABLED=false
+          pip3 install -r event_pubsub/requirements.txt
+          PYTHONPATH=$PWD python3 -m coverage run -m pytest event_pubsub/testcases/unit_testcases/*.py
+
+      - name: orchestrator
+        run: |
+          export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+          export AWS_XRAY_SDK_ENABLED=false
+          pip3 install -r orchestrator/requirements.txt
+          PYTHONPATH=$PWD python3 -m coverage run -m pytest orchestrator/testcases/integration_testcases/*.py orchestrator/testcases/unit_testcases/*.py
+
+      - name: registry
+        run: |
+          export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+          export AWS_XRAY_SDK_ENABLED=false
+          pip3 install -r registry/requirements.txt
+          PYTHONPATH=$PWD python3 -m coverage run -m pytest registry/testcases/unit_testcases/*.py registry/testcases/functional_testcases/*.py
+
+      - name: signer
+        run: |
+          export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+          export AWS_XRAY_SDK_ENABLED=false
+          pip3 install -r signer/requirements.txt
+          PYTHONPATH=$PWD python3 -m coverage run -m pytest signer/testcases/integration_testcases/*.py
+
+      - name: verification
+        run: |
+          export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+          export AWS_XRAY_SDK_ENABLED=false
+          pip3 install -r verification/requirements.txt
+          PYTHONPATH=$PWD python3 -m coverage run -m pytest verification/testcases/unit_testcases/*.py verification/testcases/functional_testcases/*.py
+
+      - name: wallets
+        run: |
+          export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+          export AWS_XRAY_SDK_ENABLED=false
+          pip3 install -r wallets/requirements.txt
+          PYTHONPATH=$PWD python3 -m coverage run -m pytest wallets/testcases/integration_testcases/*.py wallets/testcases/unit_testcases/*.py
