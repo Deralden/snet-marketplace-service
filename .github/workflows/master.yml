@@ -156,6 +156,8 @@ jobs:
         run: |
           export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
           export AWS_XRAY_SDK_ENABLED=false
+          pip3 install -r lambda_layers/web3_and_grpc_libraries/requirements.txt
+          pip3 install -r lambda_layers/common_python_libraries/requirements.txt
           pip3 install -r event_pubsub/requirements.txt
           PYTHONPATH=$PWD python3 -m coverage run -m pytest event_pubsub/testcases/unit_testcases/*.py
 
@@ -170,6 +172,9 @@ jobs:
         run: |
           export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
           export AWS_XRAY_SDK_ENABLED=false
+          pip3 install -r lambda_layers/web3_and_grpc_libraries/requirements.txt
+          pip3 install -r lambda_layers/common_python_libraries/requirements.txt
+          pip3 install -r registry/migration/requirements.txt
           pip3 install -r registry/requirements.txt
           PYTHONPATH=$PWD python3 -m coverage run -m pytest registry/testcases/unit_testcases/*.py registry/testcases/functional_testcases/*.py
 
