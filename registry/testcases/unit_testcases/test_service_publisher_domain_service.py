@@ -5,6 +5,7 @@ from registry.domain.models.service import Service
 from registry.domain.models.service_group import ServiceGroup
 from registry.domain.services.service_publisher_domain_service import ServicePublisherDomainService
 
+
 class TestServicePublisherDomainService(TestCase):
 
     def test_get_service_metadata(self):
